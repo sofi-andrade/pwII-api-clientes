@@ -1,0 +1,22 @@
+{
+  "name": "pwii-api-clientes",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/sofi-andrade/pwII-api-clientes#readme",
+  "bugs": {
+    "url": "https://github.com/sofi-andrade/pwII-api-clientes/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sofi-andrade/pwII-api-clientes.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
+
+

@@ -16,7 +16,7 @@ res.json({
 })
 
 })
-app.use("/cliente", clientesRoutes);
+app.use("/clientes", clientesRoutes);
 app.use((req, res) => {
 res.status (404).json({
     sucesso:false,

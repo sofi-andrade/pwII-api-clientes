@@ -8,4 +8,4 @@ class Cliente{
     }
 }
 
-Module.exports = Cliente;
+module.exports = Cliente;

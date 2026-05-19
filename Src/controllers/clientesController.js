@@ -1,5 +1,5 @@
-const cliente = require ("../data/clientes");
-contstnlistarCliente = (req, res) => {
+const cliente = require ("../../data/cliente");
+const listarCliente = (req, res) => {
     try{
         return res.status(200).json({
         sucesso: true,

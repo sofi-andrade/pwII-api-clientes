@@ -1,10 +1,10 @@
 class Cliente{
-    constructor(idCliente, nome, email, Endereco, telefone){
+    constructor(idCliente, nome, Endereco, telefone){
         this.idCliente= idCliente;
         this.nome = nome;
-        this.email = email;
-        this.Endereco = Endereco;
         this.telefone = telefone;
+        this.Endereco = Endereco;
+        
     }
 }
 

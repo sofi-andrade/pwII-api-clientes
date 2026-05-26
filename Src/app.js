@@ -1,5 +1,6 @@
 const express = require("express");
 const   clientesRoutes = require("./Routes/clientesRoutes") 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -12,10 +13,11 @@ res.json({
     endpoints: {
         listarTodos: "GET/clientes",
         buscarPorId: "GET/clientes/:id"
-    }
+
+        }
+    })
 })
 
-})
 app.use("/clientes", clientesRoutes);
 app.use((req, res) => {
 res.status (404).json({
@@ -27,4 +29,5 @@ res.status (404).json({
 app.listen(PORT, () => {
     console.log(`Servido rodado na porta ${PORT}`)
 })
+
 module.exports.app; 

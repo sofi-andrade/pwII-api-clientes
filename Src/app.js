@@ -1,5 +1,9 @@
+const path = require("path");
+const prisma = require("./config/prisma");
+const { PrismaClient } = require("@prisma/client");
+require ("dotenv").config({ path: path.resolve(__dirname, ".env")});
 const express = require("express");
-const   clientesRoutes = require("./Routes/clientesRoutes") 
+const   clientesRoutes = require("./Routes/clientesRoutes"); 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,3 +35,4 @@ app.listen(PORT, () => {
 })
 
 module.exports.app; 
+

@@ -1,34 +1,41 @@
-const clientes = require ("../../data/cliente");
-const listarCliente = (req, res) => {
-    try{
-        return res.status(200).json({
-        sucesso: true,
-        total: clientes.length,
-        dados: clientes,
+const prisma = require("../config/prisma");
+const listarCliente = async (req, res) => {
+    try {
+        const resultado = await prisma.cliente.findMany({
+        where: { ativo: true },
     });
-    } catch (error) {
-        return res.status(500).json({
-            sucesso: false,
-            mensagem: "Erro ao listar clientes.",
-            erro: error.message
+    return res.status(200).json({
+      sucesso: true,
+      total: resultado.length,
+      dados: resultado.map((c) => ({ id: c.id, nome: c.nome, email: c.email })),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao listar clientes.",
+      erro: error.message,
         });
     }
 };
-const buscarClientePorId = (req, res) => {
-    try {
-        const id = parseInt(req.params.id);
-        if(isNaN(id)) {
-            return res.status(400).json({
-                sucesso: false,
-                mensagem: "ID inválido. O ID deve ser um número inteiro.",
-            });
-        }
-        const cliente =  cliente.find((c) => c.id === id);
+const buscarClientePorId = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
 
-        if (!cliente) {
-            return res.status(404).json({
-                sucesso: false,
-                mensagem: `cliente com ID ${id} não encontrado.`,
+    if (isNaN(id)) {
+      return res.status(400).json({
+        sucesso: false,
+        mensagem: "ID inválido. Deve ser um número inteiro.",
+      });
+    }
+
+    const cliente = await prisma.cliente.findUnique({
+      where: { id: id },
+    });
+
+    if (!cliente) {
+      return res.status(404).json({
+        sucesso: false,
+        mensagem: `Cliente com ID ${id} não encontrado.`,
             });
         }
         return res.status(200).json({
@@ -44,27 +51,26 @@ const buscarClientePorId = (req, res) => {
     }
 }
 
-const adicionarCliente = async(req, res) => {
-    try{
-        const {nome, telefone , endereco } = req.body;
-        const novo_cliente = new Cliente(
-            clientes.length + 1,
-            nome,
-            telefone,
-            endereco
-        );
-        clientes.push(novo_cliente);
-        return res.status(201).json({
-            sucesso: true,
-            mensagem: "Usuario adiconado com sucesso"
-        });
-
-    }catch(error){
-        return res.status(500).json({
-            sucesso: false,
-            mensagem: "Erro ao adicionar cliente",
-            erro: error.message
-        }) 
+const adicionarCliente = async (req, res) => {
+  try {
+    const { nome, telefone, endereco } = req.body;
+    const novo_cliente = await prisma.cliente.create({
+      data: {
+        nome: nome,
+        telefone: telefone,
+        endereco: endereco,
+      },
+    });
+    return res.status(201).json({
+      suscesso: true,
+      mensagem: `Usuário ${novo_cliente.nome} adicionado com sucesso!`,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao criar cliente",
+      erro: error.message,
+        }) ;
     }
 }
 
@@ -74,8 +80,11 @@ const atualizarCliente = async (req, res) => {
     try{
         const { id } = req.params;
         const { nome, telefone, endereco } = req.body
-
-        const cliente = clientes.find((c) => c.id == id);
+        const cliente = await Prisma.Cliente.findUnique({
+            where: {id: parseInt(id)},
+            data: {nome, telefone, endereco}
+        });
+       
 
         if(!cliente){
             return res.status(404).json({
@@ -84,9 +93,13 @@ const atualizarCliente = async (req, res) => {
             });
 
         }else{
-            cliente.nome = nome;
-            cliente.telefone = telefone;
-            cliente.Endereco = endereco;
+            await Prisma.cliente.update({
+               where:{ id: parseInt(id)} 
+            })
+            await prisma.cliente.update({
+                where: { id: parseInt(id) },
+                data: { nome, telefone, endereco },
+            });
 
             return res.status(200).json({
                 sucesso: true,
@@ -108,15 +121,20 @@ const atualizarCliente = async (req, res) => {
 const deletarCliente = async(req, res) => {
     try{
         const { id } = req.params;
-        const index = clientes.findIndex((c) => c.id == id);
+        const cliente = await prisma.cliente.findUnique({
+            where: {id: parseInt(id)}
+        });
         
-        if(index === -1){
+        if(!cliente){
             return res.status(404).json({
                 sucesso: false,
                 mensagem: `Cliente de ${id} não encontrado`
             })
         }else{
-            clientes.splice(index, 1);
+            await prisma.cliente.update({
+                where:{ id: parseInt(id)},
+                data: {ativo: false},
+            });
             return res.status(200).json({
                 sucesso: true,
                 mensagem: `Cliente com ${id} removido com sucesso`
